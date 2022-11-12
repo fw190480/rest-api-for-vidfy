@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 // creating Schema 
 const userSchema = new mongoose.Schema({
-  mobileNumber:{
+  name:{
     type:String,
-    minLength:10,
-    maxLength:10
+   required:true
   },
   email:{
     type:String,
@@ -12,6 +11,10 @@ const userSchema = new mongoose.Schema({
     unique:true
   },
   password:{
+    type:String,
+    required:true
+  },
+  isPremium:{
     type:String,
     required:true
   }

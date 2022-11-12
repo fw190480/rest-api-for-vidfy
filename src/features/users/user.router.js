@@ -11,7 +11,7 @@ app.post("/login",async(req,res)=>{
         // console.log(cred)
         if(cred){
             if(cred.password===password){
-                res.status(200).send({token:`${email}##+$##{password}`})
+                res.status(200).send({token:`${email}##+##${password}`,name:cred.name || "", premium:cred.isPremium || false})
             }else{
                 res.status(404).send('Wrong Password')
             }
@@ -31,7 +31,7 @@ app.post("/signup",async(req,res)=>{
         if(user){
             return res.status(404).send("you are already signup")
         }
-        let createUser = await User.create(req.body);
+        let createUser = await User.create({...req.body,isPremium:false});
         res.status(200).send({token:`${email}##+##${password}`})
     }catch(err){
         res.status(500).send(err.message)
@@ -47,6 +47,21 @@ app.get('/details',async(req,res)=>{
             return res.status(404).send("Authorization failed")
         }
         res.send(details)
+    }catch(e){
+        res.status(500).send(e.message)
+    }
+})
+
+app.patch('/payment',async(req,res)=>{
+    const {email,password} = req.body
+    try{
+        let details =await User.findOne({email,password})
+        if(details){
+            let updatedUser = await User.findByIdAndUpdate(details.id,{isPremium:true},{new:true})
+            res.status(200).send(updatedUser)
+        }else{
+            return res.status(404).send('wrong crediential')
+        }
     }catch(e){
         res.status(500).send(e.message)
     }
